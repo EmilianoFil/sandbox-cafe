@@ -1,0 +1,40 @@
+/* Inputs comunes */
+input {
+  padding: 14px;
+  font-size: 16px;
+  width: 100%;
+  margin: 14px 0;
+  border: 2px solid white;
+  border-radius: 8px;
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* Día y mes como input visual */
+.input-like {
+  padding: 10px;
+  font-size: 16px;
+  width: 43%;
+  margin: 10px 0;
+  border: 2px solid white;
+  border-radius: 8px;
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+}
+
+.input-like option[disabled],
+.input-like option:first-child {
+  color: #999;
+  font-weight: normal;
+}
+
+@media (max-width: 480px) {
+  input, .input-like {
+    font-size: 15px;
+  }
+}

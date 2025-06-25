@@ -1,0 +1,147 @@
+:root {
+  --color-claro: #f3eadb;
+  --color-oscuro: #4c3b2e;
+  --color-secundario-1: #9a5c36;
+  --color-secundario-2: #757d6b;
+  --color-hover: #797979;
+  --sombra-oscura: rgba(76, 59, 46, 1);
+}
+
+/* Botones */
+button, .btn-primary {
+  padding: 10px 20px;
+  font-family: 'Playfair Display', serif;
+  font-size: 12px;
+  margin: 12.5px auto;
+  background-color: var(--color-secundario-2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-top: 10px;
+  white-space: nowrap; 
+}
+
+.btn-secondary {
+  background-color: var(--color-secundario-1);
+  color: var(--color-claro);
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 12.5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#mensaje-error .boton {
+  margin-top: 20px;
+  display: inline-block;
+  background-color: #ed7053;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+.tarjeta-fidelidad .volver-card {
+  background-color: white;
+  color: var(--color-oscuro);
+  font-weight: bold;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.btn-estadisticas {
+  background-color: white;
+  color: #ed7053;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 12.5px;
+}
+
+.logout-button {
+  background-color: var(--color-oscuro);
+  color: var(--color-claro);
+  border: none;
+  padding: 10px 20px;
+  font-family: 'Syncopate', serif;
+  cursor: pointer;
+  margin-top: 20px;
+  border-radius: 4px;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #eee;
+}
+
+.boton {
+  display: inline-block;
+  background-color: var(--color-secundario-2);
+  font-family: 'Syncopate', serif;
+  color: var(--color-claro);
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  button, .btn-primary, .btn-secondary, .btn-estadisticas {
+    font-size: 15px;
+  }
+  .logo {
+    margin-bottom: 20px;
+  }
+}
+
+.botonera {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.boton-mayus {
+  text-transform: uppercase;
+}
+
+.btn-volver {
+  display: inline-block;
+  background-color: var(--color-claro);
+  color: var(--color-oscuro);
+  font-family: 'Playfair Display', serif;
+  font-size: 12px;
+  padding: 6px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px var(--sombra-oscura);
+  transition: all 0.2s ease;
+}
+
+.btn-volver:hover {
+  background-color: #f9f9f9;
+}
+
+@media (max-width: 480px) {
+  .boton {
+    width: 90%;
+    max-width: 300px;
+  }
+}

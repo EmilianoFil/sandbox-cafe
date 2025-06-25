@@ -1,0 +1,72 @@
+:root {
+  --color-claro: #f3eadb;
+  --color-oscuro: #4c3b2e;
+  --color-secundario-1: #9a5c36;
+  --color-secundario-2: #757d6b;
+}
+
+.footer {
+  margin-top: 30px;
+  text-decoration: none;
+  text-align: center;
+}
+
+.footer-title {
+  color: var(--color-oscuro);
+  font-family: 'Playfair Display', serif;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-size: 17px;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+.footer-link {
+  color: var(--color-oscuro);
+  text-transform: lowercase;
+  text-decoration: none;
+  font-family: 'Syncopate', serif;
+}
+
+.footer-title_card {
+  color: var(--color-claro);
+  font-family: 'Playfair Display', serif;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-size: 17px;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+/* Por defecto ocultamos el footer estilo tarjeta */
+.footer-card {
+  display: none;
+}
+
+.footer-link_card {
+  color: var(--color-claro);
+  text-transform: lowercase;
+  text-decoration: none;
+  font-family: 'Syncopate', serif;
+}
+
+/* Si una tarjeta contiene el footer, mostramos ese y ocultamos el otro */
+.tarjeta-fidelidad .footer-card {
+  display: block;
+}
+
+.tarjeta-fidelidad .footer-default {
+  display: none;
+}
+
+footer a[href*="instagram.com"]::before {
+  content: "";
+  display: inline-block;
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png");
+  background-size: 16px 16px;
+  width: 16px;
+  height: 16px;
+  text-decoration: none;
+  margin-right: 6px;
+  vertical-align: middle;
+}

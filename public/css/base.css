@@ -1,0 +1,46 @@
+:root {
+  --color-claro: #f3eadb;
+  --color-oscuro: #4c3b2e;
+  --color-secundario-1: #9a5c36;
+  --color-secundario-2: #757d6b;
+}
+
+/* Tipografías generales */
+body {
+  font-family: 'Syncopate', serif;
+  color: var(--color-claro);
+  background-color: var(--color-claro);
+}
+
+h1 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: var(--color-claro);
+}
+
+h2 {
+  font-size: 18px;
+  font-family: 'Playfair Display', serif;
+  margin-top: 10px;
+  padding-bottom: 5px;
+  color: var(--color-claro);
+}
+
+h3 {
+  font-size: 18px;
+  font-family: 'Playfair Display', serif;
+  margin-top: 10px;
+  padding-bottom: 5px;
+  color: var(--color-oscuro)
+}
+
+h4 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: var(--color-claro);
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}

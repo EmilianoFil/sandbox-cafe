@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <!-- <meta http-equiv="refresh" content="2; url=https://darsena.com.ar/"> -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Abriéndo sitio...</title>
+  <style>
+    body {
+      background-color: #d86634;
+      color: white;
+      font-family: 'Syncopate', serif;
+      text-align: center;
+      margin-top: 20vh;
+    }
+    .logo {
+      width: 100px;
+      margin-bottom: 30px;
+    }
+    .galope {
+      animation: galopar 1s infinite ease-in-out alternate;
+    }
+
+    @keyframes galopar {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 18px;
+        padding: 0 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <img src="css/img/logo_original.png" class="logo galope" alt="Dársena Logo" />
+  <h1>Galopando hasta el sitio de Dársena</h1>
+  <script>
+    fetch("https://us-central1-sandbox-cafe-emilianofil.cloudfunctions.net/apiCliente/logQR", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        usuario: "Cliente",
+        accion: "EscaneoQR",
+        detalles: "Cliente escaneó QR redireccionador"
+      })
+    }).finally(() => {
+      setTimeout(() => {
+        window.location.href = "https://corcegacafe.com.ar/?t=" + Date.now();
+      }, 800);
+    });
+  </script>
+</body>
+</html>

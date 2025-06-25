@@ -1,0 +1,169 @@
+/* Base general */
+body {
+  margin: 0;
+  font-family: 'Syncopate', serif;
+  background-color: #fdfcf7;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+  position: relative;
+}
+
+/* Card principal */
+.menu-style {
+  width: 90%;
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 20px 20px;
+  background: #01323f;
+  border-radius: 16px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Logo (caballito) */
+.logo, .galope {
+  width: 250px;
+  display: block;
+  margin: 0 auto 20px;
+}
+
+.galope {
+  animation: galopar 1s infinite ease-in-out alternate;
+}
+
+@keyframes galopar {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
+
+/* Títulos */
+h1 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+/* Inputs */
+input {
+  padding: 14px;
+  font-size: 16px;
+  width: 100%;
+  margin: 14px 0;
+  border: 2px solid white;
+  border-radius: 8px;
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* Botones */
+button, .btn-primary {
+  padding: 10px 20px;
+  font-family: 'Syncopate', serif;
+  font-size: 12px;
+  margin: 12.5px auto;
+  background-color: #ed7053;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-top: 10px;
+  white-space: nowrap; 
+}
+
+.btn-secondary {
+  padding: 8px 16px;
+  font-size: 14px;
+  background: white;
+  color: #d86634;
+  border: 2px solid #ed7053;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.btn-estadisticas {
+  background-color: white;
+  color: #ed7053;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 12.5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Mensajes */
+.mensaje {
+  margin-top: 20px;
+  font-weight: bold;
+  color: #008ba4;
+  white-space: pre-line;
+}
+
+.mensaje.error,
+.mensaje.ok {
+  color: #008ba4;
+}
+
+/* Loader */
+#loader {
+  width: 95px;
+  display: none;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Usuario y logout */
+#usuarioLogueado {
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.logout {
+  margin-top: 20px;
+}
+
+.logout a {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: bold;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+/* Boton día y mes de cumpleaños */
+.input-like {
+  padding: 10px;
+  font-size: 16px;
+  width: 43%;
+  margin: 10px 0;
+  border: 2px solid white;
+  border-radius: 8px;
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+}
+
+.input-like option[disabled] {
+  color: #999;
+}
+
+.input-like option:first-child {
+  color: #999;
+  font-weight: normal;
+}

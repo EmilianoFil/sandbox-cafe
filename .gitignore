@@ -1,0 +1,15 @@
+# Ignorar backend (Firebase functions)
+backend/
+
+# Ignorar archivos de configuración sensibles
+.firebase/
+.firebaserc
+.env
+.env.*
+
+# Ignorar node_modules por las dudas
+node_modules/
+
+# Ignorar IDEs y sistemas
+.DS_Store
+.vscode/

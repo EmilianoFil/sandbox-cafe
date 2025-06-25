@@ -1,0 +1,17 @@
+/* Loader */
+#loader {
+  width: 95px;
+  display: none;
+  margin: 20px auto 0;
+  text-align: center;
+}
+
+.galope {
+  width: 80px;
+  animation: galopar 1s infinite ease-in-out alternate;
+}
+
+@keyframes galopar {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}

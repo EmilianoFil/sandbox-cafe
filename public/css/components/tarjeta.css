@@ -1,0 +1,79 @@
+:root {
+  --color-claro: #f3eadb;
+  --color-oscuro: #4c3b2e;
+  --color-secundario-1: #9a5c36;
+  --color-secundario-2: #757d6b;
+  --sombra-oscura: rgba(76, 59, 46, 1);
+  --color-textos-tarjeta: #f3eadb;
+}
+
+.tarjeta-fidelidad {
+  background: var(--color-secundario-2);
+  width: 90% !important;
+  color: var(--color-claro);
+  padding: 20px 20px !important;
+  border-radius: 16px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 0 15px var(--sombra-oscura);
+  text-align: center;
+}
+
+.tarjeta-fidelidad ul li {
+  font-size: 16px;
+  margin: 6px 0;
+  font-family: 'Syncopate', serif;
+}
+
+/* Grid de círculos */
+.tarjeta-fidelidad .grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  justify-content: center;
+  margin: 20px auto;
+  max-width: 280px;
+}
+
+.tarjeta-fidelidad .circle {
+  width: 80px;
+  height: 80px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background-size: 95%;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.2;
+}
+
+.tarjeta-fidelidad .circle.lleno {
+  background-image: url("../img/logo_circulos.png");
+  opacity: 1;
+}
+
+.tarjeta-fidelidad .circle.noveno {
+  background-image: url("../img/logo_circulo_9.png");
+  opacity: 1;
+}
+
+/* Ajustes texto tarjeta fidelidad */
+.tarjeta-fidelidad #cliente {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--color-claro);
+}
+
+.tarjeta-fidelidad #faltan {
+  font-size: 16px;
+  font-weight: normal;
+  margin-bottom: 20px;
+  color: var(--color-claro);
+}
+
+@media (max-width: 480px) {
+  .tarjeta-fidelidad .circle {
+    width: 65px;
+    height: 65px;
+  }
+}

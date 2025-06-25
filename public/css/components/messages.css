@@ -1,0 +1,39 @@
+:root {
+  --color-claro: #f3eadb;
+  --color-oscuro: #4c3b2e;
+  --color-secundario-1: #9a5c36;
+  --color-secundario-2: #757d6b;
+}
+
+/* Mensajes generales */
+.mensaje {
+  margin-top: 20px;
+  font-weight: bold;
+  color: var(--color-secundario-1);
+  white-space: pre-line;
+}
+
+.mensaje.error,
+.mensaje.ok,
+.mensaje a {
+  color: var(--color-secundario-1);
+}
+
+.mensaje a {
+  text-decoration: underline;
+  display: inline-block;
+  margin: 5px;
+}
+
+#volverBtn {
+  display: none;
+}
+
+.mensaje-error {
+  padding: 30px 20px;
+  background: var(--color-oscuro);
+  border-radius: 12px;
+  font-size: 18px;
+  color: var(--color-claro);
+  text-align: center;
+}

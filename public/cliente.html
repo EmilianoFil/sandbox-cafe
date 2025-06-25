@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin - Detalle Cliente</title>
+  <script>
+    fetch("head.html")
+      .then(res => res.text())
+      .then(head => document.head.innerHTML += head);
+  </script>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" /> 
+  <link rel="stylesheet" href="css/components/branding.css" />
+  <link rel="stylesheet" href="css/components/inputs.css" />
+  <link rel="stylesheet" href="css/components/buttons.css" />
+  <link rel="stylesheet" href="css/components/loader.css" />
+  <link rel="stylesheet" href="css/components/messages.css" />
+  <link rel="stylesheet" href="css/components/tarjeta.css" />
+</head>
+<body>
+  <div class="menu-style">
+    <h1>Buscar Cliente</h1>
+    <input type="text" id="busqueda" placeholder="DNI o nombre y apellido" />
+    <br>
+    <button id="buscarBtn" class="boton">
+      Buscar
+    </button>
+    <div id="loader">
+      <img src="css/img/logo_original.png" class="galope" />
+    </div>
+    <div id="resultado" class="resultado"></div>
+    <div class="footer">
+      <a href="admin.html" class="volver">⬅ Volver al panel</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, onAuthStateChanged } from './js/firebase-auth.js';
+    import { apiCliente } from './js/cliente.js';
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const clienteAdmin = await apiCliente.obtenerAdmin(user.uid);
+      if (!clienteAdmin || clienteAdmin.rol !== "dueño") {
+        alert("Acceso restringido a dueños.");
+        window.location.href = "login.html";
+      }
+    });
+
+    document.getElementById("buscarBtn").addEventListener("click", async () => {
+      const termino = document.getElementById("busqueda").value.trim().toLowerCase();
+      const loader = document.getElementById("loader");
+      const resultado = document.getElementById("resultado");
+      resultado.innerHTML = "";
+      loader.style.display = "block";
+
+      const lista = await apiCliente.obtenerTodosLosClientes();
+
+      loader.style.display = "none";
+
+      const encontrado = lista.find(data =>
+        data.dni.toLowerCase() === termino ||
+        data.nombre.toLowerCase().includes(termino)
+      );
+
+      if (!encontrado) {
+        resultado.innerHTML = "<p>No se encontró ningún cliente con ese dato.</p>";
+        return;
+      }
+
+      const alta = encontrado.creado ? new Date(encontrado.creado._seconds * 1000) : null;
+      const dias = alta ? Math.floor((Date.now() - alta.getTime()) / (1000 * 60 * 60 * 24)) : null;
+      const formatFecha = (fecha) => {
+        const d = fecha.getDate().toString().padStart(2, '0');
+        const m = (fecha.getMonth() + 1).toString().padStart(2, '0');
+        const y = fecha.getFullYear();
+        return `${d}/${m}/${y}`;
+      };
+
+      const altaTexto = alta ? `${formatFecha(alta)} (${dias} días)` : "—";
+
+      const ultimo = encontrado.ultimo_cafe ? new Date(encontrado.ultimo_cafe._seconds * 1000) : null;
+      const ultimoTexto = ultimo ? ultimo.toLocaleString() : "—";
+
+      resultado.innerHTML = `
+        <div class="info-cliente">
+          <p><strong>DNI:</strong> ${encontrado.dni}</p>
+          <p><strong>Nombre:</strong> ${encontrado.nombre}</p>
+          <p><strong>Email:</strong> ${encontrado.email}</p>
+          <p><strong>Fecha de alta:</strong> ${altaTexto}</p>
+          <p><strong>Cafecitos acumulados:</strong> ${encontrado.cafes}</p>
+          <p><strong>Total histórico:</strong> ${encontrado.cafes_acumulados_total}</p>
+          <p><strong>¿Tiene café gratis?</strong> ${encontrado.cafe_disponible ? "Sí ☕" : "No"}</p>
+          <p><strong>Último café:</strong> ${ultimoTexto}</p>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>

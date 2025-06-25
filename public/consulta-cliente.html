@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script>
+    fetch("head.html")
+      .then(res => res.text())
+      .then(head => document.head.innerHTML += head);
+  </script>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components/branding.css" />
+  <link rel="stylesheet" href="css/components/buttons.css" />
+  <link rel="stylesheet" href="css/components/inputs.css" />
+  <link rel="stylesheet" href="css/components/footer.css" />
+</head>
+<body>
+  <div class="menu-style">
+    <h1>☕ <strong>Consultá cómo venís</strong></h1>
+    <h3>Ingresá tu DNI para ver el progreso</h3>
+    <form id="dniForm">
+      <input type="tel" name="dni" id="dni" placeholder="DNI" inputmode="numeric" pattern="[0-9]*" maxlength="8" required />
+      <button type="submit" class="btn-primary">Ver</button>
+    </form>
+  <div style="text-align: center;">
+    <a href="index.html" class="btn-volver">Ir a página principal</a>
+  </div>
+    <div id="footer-container"></div>
+    <script>
+      fetch("footer.html")
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById("footer-container").innerHTML = html;
+        });
+    </script>
+  </div>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("dniForm");
+      form.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const dniInput = document.getElementById("dni");
+        if (dniInput && dniInput.value.trim()) {
+          const dni = dniInput.value.trim();
+          window.location.href = `estado.html?dni=${encodeURIComponent(dni)}`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

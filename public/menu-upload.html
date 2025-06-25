@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <title>Subida Menú</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Syncopate&display=swap" rel="stylesheet"> <!-- Tipografías personalizadas --> <!--//Agrego para uso de letra -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <style>
+    body {
+      background-color: #fdfcf7;
+      font-family: Playfair Display, sans-serif;
+    }
+    .menu-style {
+      background-color: #003941;
+      border-radius: 20px;
+      padding: 40px 30px;
+      max-width: 480px;
+      margin: 60px auto;
+      color: white;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .titulo {
+      font-size: 20px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin: 12px 0;
+      border-radius: 8px;
+      border: none;
+      box-sizing: border-box;
+    }
+    input[type="file"] {
+      background: white;
+    }
+    input[type="text"] {
+      background: #f4f4f4;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #d86634;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #c25427;
+    }
+    .msg {
+      margin-top: 20px;
+      font-weight: bold;
+      color: white;
+    }
+    .file-upload {
+      text-align: left;
+      margin: 12px 0;
+    }
+    #menuFile {
+      display: none;
+    }
+    .boton-archivo {
+      display: inline-block;
+      padding: 10px 16px;
+      background-color: white;
+      color: #d86634;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      font-size: 14px;
+    }
+    #archivoNombre {
+      display: inline-block;
+      margin-left: 12px;
+      font-size: 14px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-style">
+    <h1 class="titulo">Subir nuevo Menú</h1>
+    <form id="menuForm">
+      <div class="file-upload">
+        <label for="menuFile" class="boton-archivo">Seleccionar archivo</label>
+        <span id="archivoNombre">Ningún archivo seleccionado</span>
+        <input type="file" id="menuFile" accept="application/pdf" required />
+      </div>
+      <!-- Comentario eliminado -->
+      <button type="submit">Subir Menú</button>
+    </form>
+    <div id="mensaje" class="msg"></div>
+  <div id="loader" style="display: none; margin-top: 20px; text-align: center; width: 100%;">
+    <img src="css/img/logo_original_sin_fondo.png" class="galope" style="width: 95px; display: inline-block;">
+  </div>
+    <div class="logout">
+      <a href="admin.html" class="volver">Volver</a>
+    </div>
+  </div>
+
+  <script>
+document.getElementById('menuFile').addEventListener('change', (e) => {
+  const fileName = e.target.files.length > 0 ? e.target.files[0].name : 'Ningún archivo seleccionado';
+  document.getElementById('archivoNombre').textContent = fileName;
+});
+
+document.getElementById('menuForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const mensaje = document.getElementById("mensaje");
+  const fileInput = document.getElementById("menuFile");
+  const file = fileInput.files[0];
+  const loader = document.getElementById("loader");
+
+  if (!file || file.name.normalize("NFC") !== "Dársena Menú.pdf") {
+    mensaje.textContent = "⚠️ El archivo debe llamarse exactamente 'Dársena Menú.pdf'";
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  loader.style.display = "block";
+  mensaje.textContent = "";
+
+  try {
+    const response = await fetch("https://us-central1-sandbox-cafe-emilianofil.cloudfunctions.net/uploadMenuToGitHub", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (data.status === "ok") {
+      mensaje.textContent = "✅ Menú subido correctamente.";
+      fileInput.value = "";
+      document.getElementById("archivoNombre").textContent = "Ningún archivo seleccionado";
+    } else {
+      mensaje.textContent = "⚠️ Hubo un error al subir el menú.";
+    }
+  } catch (err) {
+    console.error(err);
+    mensaje.textContent = "⚠️ Error al subir el menú.";
+  } finally {
+    loader.style.display = "none";
+  }
+});
+  </script>
+</body>
+</html>

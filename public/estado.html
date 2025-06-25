@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <script>
+    fetch("head.html")
+      .then(res => res.text())
+      .then(head => document.head.innerHTML += head);
+  </script>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components/branding.css" />
+  <link rel="stylesheet" href="css/components/tarjeta.css" />
+  <link rel="stylesheet" href="css/components/buttons.css" />
+  <link rel="stylesheet" href="css/components/messages.css" />
+  <link rel="stylesheet" href="css/components/inputs.css" />
+  <link rel="stylesheet" href="css/components/loader.css" />
+  <link rel="stylesheet" href="css/components/footer.css" />
+  <title>Consulta Tarjeta Cliente</title>
+</head> 
+<body>
+  <div id="loader" aria-label="Cargando contenido de la tarjeta de cliente">
+    <img src="css/img/logo-corcega-color.png" alt="Cargando..." class="galope">
+  </div>
+
+  <div class="menu-style" id="contenedor" style="display:none;">
+    <div id="info-header">
+      <p id="cliente"></p>
+      <h2>
+        <span style="color: var(--color-textos-tarjeta); font-size: 17px; display:block; margin-top: 6px;">COMPLETÁ LAS VISITAS Y TE INVITAMOS</span>
+      </h2>
+      <h4>
+        <span style="font-size: 37px; display:block; margin-top: 6px; font-family: 'Syncopate', sans-serif;">UN CAFECITO</span>
+      </h4>
+      <p id="faltan" style="color: var(--color-textos-tarjeta); font-family: 'Playfair Display', serif; text-transform: uppercase; font-size: 17px; display: block; margin-top: 6px;"></p>
+    </div>
+    <div id="grid" class="grid"></div>
+    <div id="mensaje-error" style="display:none;">
+      <div style="padding: 30px 20px; background: var(--color-textos-tarjeta); border-radius: 12px; font-size: 18px; color: var(--color-textos-tarjeta); text-align: center;">
+        <p id="mensaje-no-registrado" style="white-space: pre-line; margin: 20px 0; color: var(--color-textos-tarjeta);"></p>
+        <div style="display: flex; justify-content: center;">
+          <a href="" id="boton-registrar" class="btn-primary" style="min-width: 220px; text-decoration: none;">Registrate</a>
+        </div>
+      </div>
+    </div>
+    <div class="logout">
+      <a href="index.html" class="volver-card">Volver</a>
+    </div>
+    <div id="footer-container"></div>
+  </div>
+
+  <script type="module">
+    import { obtenerCliente } from './js/api.js';
+
+    const colorTextos = getComputedStyle(document.documentElement).getPropertyValue('--color-textos-tarjeta').trim();
+
+    const params = new URLSearchParams(window.location.search);
+    const dni = params.get("dni");
+    document.getElementById("boton-registrar").href = `registro.html?dni=${dni}`;
+
+    async function consultarCliente(dni) {
+      const res = await obtenerCliente(dni);
+
+      document.getElementById("loader").style.display = "none";
+      const contenedor = document.getElementById("contenedor");
+      contenedor.style.display = "block";
+
+      if (!res || res.status !== "ok") {
+        document.title = "Resultado consulta cliente";
+        document.getElementById("cliente").style.display = "none";
+        document.getElementById("faltan").style.display = "none";
+        document.getElementById("grid").style.display = "none";
+        const mensajeError = document.getElementById("mensaje-error");
+        mensajeError.style.display = "block";
+        document.getElementById("mensaje-no-registrado").innerHTML = `El DNI <strong>${dni}</strong> no está registrado en nuestro Club de Recompensas.`;
+        contenedor.classList.remove("tarjeta-fidelidad");
+
+        document.querySelector("#info-header span").style.color = colorTextos;
+        document.getElementById("faltan").style.color = colorTextos;
+        document.getElementById("cliente").style.color = colorTextos;
+
+        window.successfulQuery = false;
+        return;
+      }
+
+      const data = res.data;
+      contenedor.classList.add("tarjeta-fidelidad");
+
+      document.querySelector("#info-header span").style.color = colorTextos;
+      document.getElementById("faltan").style.color = colorTextos;
+      document.getElementById("cliente").style.color = colorTextos;
+
+      const nombre = data.nombre || "Amigo";
+      const cafes = parseInt(data.cafes) || 0;
+      document.title = "Tarjeta cliente";
+      document.getElementById("cliente").textContent = `Hola ${nombre}`;
+      document.getElementById("faltan").textContent = cafes < 8
+        ? `Te faltan ${8 - cafes} para alcanzarlo`
+        : "¡El próximo lo invitamos nosotros! 🐎🎉";
+
+      document.getElementById("estado-accesible").textContent =
+        cafes < 8
+          ? `Tenés ${cafes} sello${cafes === 1 ? '' : 's'}. Te faltan ${8 - cafes} para tu café gratis.`
+          : "¡Ya juntaste 8 sellos! El próximo café es gratis.";
+
+      const grid = document.getElementById("grid");
+
+      const selloCumpleActivo = data.sello_cumpleanios_activo === true;
+      const selloInstaActivo = data.sigue_instagram === true && data.sello_instagram_usado === false;
+
+      let cafesRestantes = parseInt(data.cafes) || 0;
+      let selloCumpleUsado = false;
+      let selloInstaUsado = false;
+
+      for (let i = 1; i <= 9; i++) {
+        const div = document.createElement("div");
+        div.className = "circle";
+
+        if (selloCumpleActivo && !selloCumpleUsado) {
+          div.style.backgroundImage = "url('css/img/logo_cumpleanios.png')";
+          div.style.backgroundSize = "cover";
+          div.style.opacity = "1";
+          div.classList.add("glow");
+          cafesRestantes--;
+          selloCumpleUsado = true;
+        } else if (selloInstaActivo && !selloInstaUsado) {
+          div.style.backgroundImage = "url('css/img/logo_sigue_instagram.png')";
+          div.style.opacity = "1";
+          div.classList.add("glow");
+          cafesRestantes--;
+          selloInstaUsado = true;
+        } else if (cafesRestantes > 0) {
+          div.classList.add("lleno");
+          cafesRestantes--;
+        } else if (i === 9) {
+          div.classList.add("noveno");
+        } else {
+          div.style.backgroundImage = "url('css/img/logo_color_claro.png')";
+        }
+
+        grid.appendChild(div);
+      }
+
+      window.successfulQuery = true;
+    }
+
+    consultarCliente(dni);
+  </script>
+  <div id="estado-accesible" style="position:absolute; left:-9999px;" aria-live="polite" aria-atomic="true"></div>
+  <script>
+    fetch("footer.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("footer-container").innerHTML = html;
+
+        // Ajustar colores luego de que el footer fue cargado
+        const footerText = document.getElementById("footer-text");
+        const footerLink = document.getElementById("footer-link");
+
+        const params = new URLSearchParams(window.location.search);
+        const dni = params.get("dni");
+
+        if (footerText) {
+          footerText.classList.add("footer-title_card");
+        }
+        if (footerLink) {
+          footerLink.classList.add("footer-link_card");
+        }
+
+        // También en caso de error
+        if (!window.successfulQuery) {
+          if (footerText) footerText.classList.add("footer-title_card");
+          if (footerLink) footerLink.classList.add("footer-link_card");
+        }
+      });
+  </script>
+</body>
+</html>

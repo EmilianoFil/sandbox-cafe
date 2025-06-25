@@ -1,0 +1,65 @@
+:root {
+  --recuadro-htmls: #f3eadb;
+  --color-claro: #f3eadb;
+  --color-oscuro: #4c3b2e;
+  --color-secundario-1: #9a5c36;
+  --color-secundario-2: #757d6b;
+  --sombra-oscura: rgba(76, 59, 46, 1);
+}
+
+/* Logo */
+.logo, .galope {
+  width: 250px;
+  display: block;
+  margin: 0 auto 20px;
+}
+
+.galope {
+  animation: galopar 1s infinite ease-in-out alternate;
+}
+
+@keyframes galopar {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
+
+/* Estilo de tarjeta base */
+.menu-style {
+  width: 90%;
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 20px 20px;
+  color: var(--color-oscuro);
+  background: var(--recuadro-htmls);
+  border-radius: 16px;
+  box-shadow: 0 0 15px var(--sombra-oscura);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+h1 {
+  color: var(--color-oscuro);
+}
+
+@media (max-width: 480px) {
+  .menu-style {
+    padding: 30px 15px;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+
+  h2 {
+    font-size: 16px;
+    font-family: 'Playfair Display', serif;
+    color: white;
+  }
+
+.logo {
+  max-width: 80%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+}
