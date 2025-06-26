@@ -119,8 +119,27 @@
         document.getElementById("loader").style.display = "block";
         form.style.display = "none";
 
-        const res = await registrarClientePublico(dni, nombre, email, cumple_dia, cumple_mes);
-        
+        const res = await registrarClientePublico({
+          dni,
+          nombre,
+          email,
+          cumple_dia,
+          cumple_mes
+        });
+
+        // Enviar mail de bienvenida usando Firebase Function
+        await fetch("https://us-central1-sandbox-cafe-emilianofil.cloudfunctions.net/enviarMailRegistro", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ dni, nombre, mail: email })
+        })
+        .then(() => {
+          console.log("📧 Mail de bienvenida enviado con éxito.");
+        })
+        .catch(error => {
+          console.error("❌ Error al enviar el mail:", error);
+        });
+
         document.title = "Cliente registrado";
         document.getElementById("mensaje").innerText = "¡Registro exitoso!\nYa empezás a sumar sellos.\n ☕️\n";
 

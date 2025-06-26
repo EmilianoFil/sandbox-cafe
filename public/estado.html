@@ -23,7 +23,7 @@
 </head> 
 <body>
   <div id="loader" aria-label="Cargando contenido de la tarjeta de cliente">
-    <img src="css/img/logo-corcega-color.png" alt="Cargando..." class="galope">
+    <img src="css/img/logo_original_sin_fondo.png" alt="Cargando..." class="galope">
   </div>
 
   <div class="menu-style" id="contenedor" style="display:none;">
@@ -39,8 +39,8 @@
     </div>
     <div id="grid" class="grid"></div>
     <div id="mensaje-error" style="display:none;">
-      <div style="padding: 30px 20px; background: var(--color-textos-tarjeta); border-radius: 12px; font-size: 18px; color: var(--color-textos-tarjeta); text-align: center;">
-        <p id="mensaje-no-registrado" style="white-space: pre-line; margin: 20px 0; color: var(--color-textos-tarjeta);"></p>
+      <div style="padding: 30px 20px; background: var(--color-textos-tarjeta); border-radius: 12px; font-size: 18px; color: var(--color-textos-tarjeta-oscuro); text-align: center;">
+        <p id="mensaje-no-registrado" style="white-space: pre-line; margin: 20px 0; color: var(--color-textos-tarjeta-oscuro);"></p>
         <div style="display: flex; justify-content: center;">
           <a href="" id="boton-registrar" class="btn-primary" style="min-width: 220px; text-decoration: none;">Registrate</a>
         </div>
@@ -56,6 +56,7 @@
     import { obtenerCliente } from './js/api.js';
 
     const colorTextos = getComputedStyle(document.documentElement).getPropertyValue('--color-textos-tarjeta').trim();
+    const colorTextosOscuros = getComputedStyle(document.documentElement).getPropertyValue('--color-textos-tarjeta-oscuro').trim();
 
     const params = new URLSearchParams(window.location.search);
     const dni = params.get("dni");
@@ -68,7 +69,7 @@
       const contenedor = document.getElementById("contenedor");
       contenedor.style.display = "block";
 
-      if (!res || res.status !== "ok") {
+      if (!res || res.status === "error") {
         document.title = "Resultado consulta cliente";
         document.getElementById("cliente").style.display = "none";
         document.getElementById("faltan").style.display = "none";
@@ -76,22 +77,30 @@
         const mensajeError = document.getElementById("mensaje-error");
         mensajeError.style.display = "block";
         document.getElementById("mensaje-no-registrado").innerHTML = `El DNI <strong>${dni}</strong> no está registrado en nuestro Club de Recompensas.`;
+        // Quitar tarjeta-fidelidad si está asignada
         contenedor.classList.remove("tarjeta-fidelidad");
 
-        document.querySelector("#info-header span").style.color = colorTextos;
-        document.getElementById("faltan").style.color = colorTextos;
-        document.getElementById("cliente").style.color = colorTextos;
+        // Cambiar color del texto de #info-header span, #cliente, #faltan, y #mensaje-no-registrado a colorTextosOscuros
+        document.getElementById("info-header").style.color = colorTextosOscuros;
+        document.querySelector("#info-header span").style.color = colorTextosOscuros;
+        document.getElementById("faltan").style.color = colorTextosOscuros;
+        document.getElementById("cliente").style.color = colorTextosOscuros;
+        document.getElementById("mensaje-no-registrado").style.color = colorTextosOscuros;
+        document.querySelector("#info-header h4 span").style.color = colorTextosOscuros;
 
         window.successfulQuery = false;
         return;
       }
 
-      const data = res.data;
+      const data = res;
       contenedor.classList.add("tarjeta-fidelidad");
 
+      // Cambiar color del texto de #info-header span, #cliente, #faltan, #info-header a colorTextos
+      document.getElementById("info-header").style.color = colorTextos;
       document.querySelector("#info-header span").style.color = colorTextos;
       document.getElementById("faltan").style.color = colorTextos;
       document.getElementById("cliente").style.color = colorTextos;
+      document.querySelector("#info-header h4 span").style.color = colorTextos;
 
       const nombre = data.nombre || "Amigo";
       const cafes = parseInt(data.cafes) || 0;
@@ -164,16 +173,17 @@
         const dni = params.get("dni");
 
         if (footerText) {
-          footerText.classList.add("footer-title_card");
+          footerText.classList.add("footer-title");
         }
         if (footerLink) {
-          footerLink.classList.add("footer-link_card");
+          footerLink.classList.add("footer-link");
         }
 
-        // También en caso de error
-        if (!window.successfulQuery) {
-          if (footerText) footerText.classList.add("footer-title_card");
-          if (footerLink) footerLink.classList.add("footer-link_card");
+        // Ajuste de clase footer-dark según el éxito de la consulta
+        if (window.successfulQuery) {
+          document.getElementById("footer-container").classList.remove("footer-dark");
+        } else {
+          document.getElementById("footer-container").classList.add("footer-dark");
         }
       });
   </script>
