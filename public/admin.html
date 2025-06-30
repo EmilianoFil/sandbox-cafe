@@ -279,7 +279,7 @@
     <button id="btnDeshacer" style="display:none;" class="btn-estadisticas">↩️ Deshacer operación</button>
     <div class="logout">
       <a href="admin.html" class="volver">Otro Cliente</a>
-      <a href="#" onclick="cerrarSesion()" class="cerrar">Cerrar sesión</a>
+      <a href="#" id="cerrarSesionLink" class="cerrar">Cerrar sesión</a>
     </div>
   </div>
 
@@ -530,6 +530,7 @@
     button.disabled = false;
   });
 </script>
+document.getElementById("cerrarSesionLink")?.addEventListener("click", cerrarSesion);
 </script>
 <script>
   document.addEventListener('click', function(event) {
