@@ -312,6 +312,8 @@
   }
   window.cerrarSesion = cerrarSesion;
 
+  document.getElementById("cerrarSesionLink")?.addEventListener("click", cerrarSesion);
+
   // Listener para el botón "Consultar cliente"
   document.getElementById("consultarCliente").addEventListener("click", async () => {
     const dni = document.getElementById("dni").value.trim();
@@ -529,8 +531,6 @@
     input.disabled = false;
     button.disabled = false;
   });
-</script>
-document.getElementById("cerrarSesionLink")?.addEventListener("click", cerrarSesion);
 </script>
 <script>
   document.addEventListener('click', function(event) {
