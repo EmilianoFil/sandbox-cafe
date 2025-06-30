@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menú - Dársena Café</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #fdfcf7;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    img {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      display: block;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="padding: 1rem;">Nuestro Menú</h1>
+  <div id="menu-container"></div>
+
+  <script>
+    const bucketUrl = "https://firebasestorage.googleapis.com/v0/b/sandbox-cafe-emilianofil.appspot.com/o/menu%2F";
+    const container = document.getElementById("menu-container");
+
+    let page = 1;
+    const tryLoad = async () => {
+      const img = new Image();
+      img.src = `${bucketUrl}img_${page}.png?alt=media`;
+      img.onload = () => {
+        container.appendChild(img);
+        page++;
+        tryLoad();
+      };
+      img.onerror = () => {
+        if (page === 1) {
+          container.innerHTML = "<p>Menú no disponible por el momento.</p>";
+        }
+      };
+    };
+
+    tryLoad();
+  </script>
+</body>
+</html>

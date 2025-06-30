@@ -1,19 +1,42 @@
-.menu-hamburguesa {
-  position: relative;
-  display: block;
-  margin-bottom: 20px;
-  text-align: left;
+:root {
+  --recuadro-htmls: #f3eadb;
+  --color-claro: #f3eadb;
+  --color-oscuro: #4c3b2e;
+  --color-secundario-1: #9a5c36;
+  --color-secundario-2: #757d6b;
+  --sombra-oscura: rgba(76, 59, 46, 1);
 }
 
+/* Card principal */
+.menu-style {
+  width: 90%;
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 20px 20px;
+  color: var(--color-oscuro);
+  background: var(--recuadro-htmls);
+  border-radius: 16px;
+  box-shadow: 0 0 15px var(--sombra-oscura);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.menu-hamburguesa {
+      position: relative;
+      display: block;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
 .menu-icon {
-  cursor: pointer;
-  display: inline-block;
-  padding: 10px 16px;
-  background-color: #d86634;
-  color: white;
-  border-radius: 6px;
-  font-weight: bold;
-  margin-left: 10px;
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px 16px;
+    background-color: var(--color-secundario-2);
+    color: var(--color-claro);
+    border-radius: 6px;
+    font-weight: bold;
+    margin-left: 10px;
 }
 
 #menu-toggle {
@@ -23,27 +46,39 @@
 .menu-links {
   display: none;
   position: absolute;
-  background-color: white;
-  border: 1px solid #ccc;
+  background-color: var(--color-secundario-2);
+  color: var(--color-claro);
   list-style: none;
-  padding: 10px;
-  margin: 5px 0 0 0;
+  padding: 5px 20px;
+  margin: 5px 0 0 10px;
   border-radius: 8px;
-  z-index: 999;
 }
 
 #menu-toggle:checked + .menu-icon + .menu-links {
   display: block;
 }
-
 .menu-links li {
   margin-bottom: 8px;
+  margin-left: auto;
 }
-
 .menu-links li a {
   text-decoration: none;
-  color: #d86634;
+  color: var(--color-claro);
   font-weight: bold;
+}
+
+ul li {
+    margin: 5px 10px;
+    padding: 5px 6px;
+    width: 90%;
+    background: var(--color-oscuro);
+    border-radius: 6px;
+}
+user agent stylesheet
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+    unicode-bidi: isolate;
 }
 
 #clientePreview {
@@ -161,14 +196,4 @@ body {
   color: white;
   margin: 0;
   padding: 0;
-}
-
-.menu-style {
-  max-width: 600px;
-  margin: 50px auto;
-  background-color: #01323f;
-  color: white;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
