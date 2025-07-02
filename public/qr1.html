@@ -7,12 +7,13 @@
   <title>Abriéndo sitio...</title>
   <style>
     body {
-      background-color: #d86634;
-      color: white;
+      background-color: #f3eadb;
+      color: #4c3b2e;
       font-family: 'Syncopate', serif;
       text-align: center;
       margin-top: 20vh;
     }
+
     .logo {
       width: 100px;
       margin-bottom: 30px;
@@ -34,8 +35,8 @@
   </style>
 </head>
 <body>
-  <img src="css/img/logo_original.png" class="logo galope" alt="Dársena Logo" />
-  <h1>Galopando hasta el sitio de Dársena</h1>
+  <img src="css/img/logo_original_sin_fondo.png" class="logo galope" alt="Dársena Logo" />
+  <h1>Estamos yendo al sitio de Dársena Café</h1>
   <script>
     fetch("https://us-central1-sandbox-cafe-emilianofil.cloudfunctions.net/apiCliente/logQR", {
       method: "POST",
@@ -47,7 +48,7 @@
       })
     }).finally(() => {
       setTimeout(() => {
-        window.location.href = "https://corcegacafe.com.ar/?t=" + Date.now();
+        window.location.href = "https://instagram.com/abvfotografia?t=" + Date.now();
       }, 800);
     });
   </script>

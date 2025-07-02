@@ -65,7 +65,6 @@
     async function consultarCliente(dni) {
       const res = await obtenerCliente(dni);
 
-      document.getElementById("loader").style.display = "none";
       const contenedor = document.getElementById("contenedor");
       contenedor.style.display = "block";
 
@@ -87,6 +86,8 @@
         document.getElementById("cliente").style.color = colorTextosOscuros;
         document.getElementById("mensaje-no-registrado").style.color = colorTextosOscuros;
         document.querySelector("#info-header h4 span").style.color = colorTextosOscuros;
+
+        document.getElementById("loader").style.display = "none";
 
         window.successfulQuery = false;
         return;
@@ -152,6 +153,8 @@
 
         grid.appendChild(div);
       }
+
+      document.getElementById("loader").style.display = "none";
 
       window.successfulQuery = true;
     }

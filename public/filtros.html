@@ -8,126 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Syncopate&display=swap" rel="stylesheet"> <!-- Tipografías personalizadas --> <!--//Agrego para uso de letra -->
   <link rel="stylesheet" href="css/panel.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Playfair Display', serif;
-      background-color: #fdfcf7;
-      color: #1d1d1d;
-    }
-
-    .menu-style {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 40px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-
-    .botones-panel {
-      display: flex;
-      justify-content: flex-start;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .btn-izquierda {
-      background-color: white;
-      color: #d86634;
-      padding: 8px 14px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 14px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .logo {
-      width: 60px;
-      display: block;
-      margin: 0 auto 20px;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 28px;
-      margin-bottom: 30px;
-      color: #0d2b37;
-    }
-
-    .filtros {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-.filtros label {
-  font-weight: bold;
-  display: flex;
-  flex-direction: column;
-  width: auto;
-}
-
-.filtros label select {
-  max-width: 100%;
-  width: 100%;
-  box-sizing: border-box;
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-    .filtros input,
-    .filtros select {
-      padding: 8px;
-      font-size: 14px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .btn-secondary {
-      padding: 8px 16px;
-      font-size: 14px;
-      background: white;
-      color: #d86634;
-      border: 2px solid #d86634;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    #mensajeAdvertencia {
-      color: #d86634;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 15px;
-      display: none;
-    }
-
-    @media (max-width: 600px) {
-      .filtros {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .filtros label {
-        width: 100%;
-      }
-
-      .filtros input,
-      .filtros select {
-        width: 100%;
-        box-sizing: border-box;
-      }
-
-      #aplicarFiltros {
-        width: 100%;
-      }
-    }
-  </style>
 </head>
 <body>
 
@@ -136,7 +16,7 @@
       <a href="panel.html" class="btn-izquierda">← Volver al panel</a>
     </div>
 
-    <img src="css/img/Corcega_Logo_Original.png" alt="Logo" class="logo">
+    <img src="css/img/logo_original_sin_fondo.png" alt="Logo" class="logo">
     <h1>Historial de actividad</h1>
 
     <div id="mensajeAdvertencia"></div>
@@ -161,7 +41,7 @@
           <option value="cerrar_sesion">Logout admin</option>
         </select>
       </label>
-      <button id="aplicarFiltros" class="btn-secondary">Aplicar filtros</button>
+      <button id="aplicarFiltros" class="btn-derecha">Aplicar filtros</button>
     </div>
 
     <table id="tablaLogs" class="display" style="width:100%">

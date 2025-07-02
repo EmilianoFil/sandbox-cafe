@@ -1,71 +1,75 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <script>
     fetch("head.html")
       .then(res => res.text())
       .then(head => document.head.innerHTML += head);
   </script>
   <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components/branding.css" />
   <link rel="stylesheet" href="css/components/tarjeta.css" />
   <link rel="stylesheet" href="css/components/buttons.css" />
-  <link rel="stylesheet" href="css/components/footer.css" />
+  <link rel="stylesheet" href="css/components/messages.css" />
+  <link rel="stylesheet" href="css/components/inputs.css" />
   <link rel="stylesheet" href="css/components/loader.css" />
-</head>
+  <link rel="stylesheet" href="css/components/footer.css" />
+  <title>Consulta Tarjeta Cliente</title>
+</head> 
 <body>
-  <div id="loader">
-    <img src="css/img/logo_original.png" alt="Cargando..." class="galope">
+  <div id="loader" aria-label="Cargando contenido de la tarjeta de cliente">
+    <img src="css/img/logo_original_sin_fondo.png" alt="Cargando..." class="galope">
   </div>
 
   <div class="menu-style" id="contenedor" style="display:none;">
     <div id="info-header">
       <p id="cliente"></p>
       <h2>
-        <span style="color: white; font-size: 17px; display:block; margin-top: 6px;">COMPLETÁ LAS VISITAS Y TE INVITAMOS</span>
+        <span style="color: var(--color-textos-tarjeta); font-size: 17px; display:block; margin-top: 6px;">COMPLETÁ LAS VISITAS Y TE INVITAMOS</span>
       </h2>
-      <h1>
+      <h4>
         <span style="font-size: 37px; display:block; margin-top: 6px; font-family: 'Syncopate', sans-serif;">UN CAFECITO</span>
-      </h1>
-      <p id="faltan" style="color: #01323f; font-family: 'Playfair Display', serif; text-transform: uppercase; font-size: 17px; display: block; margin-top: 6px;"></p>
+      </h4>
+      <p id="faltan" style="color: var(--color-textos-tarjeta); font-family: 'Playfair Display', serif; text-transform: uppercase; font-size: 17px; display: block; margin-top: 6px;"></p>
     </div>
     <div id="grid" class="grid"></div>
     <div id="mensaje-error" style="display:none;">
-      <div style="padding: 30px 20px; background: #01323f; border-radius: 12px; font-size: 18px; color: white; text-align: center;">
-        <p id="mensaje-no-registrado" style="white-space: pre-line; margin: 20px 0; color: #008ba4;"></p>
+      <div style="padding: 30px 20px; background: var(--color-textos-tarjeta); border-radius: 12px; font-size: 18px; color: var(--color-textos-tarjeta-oscuro); text-align: center;">
+        <p id="mensaje-no-registrado" style="white-space: pre-line; margin: 20px 0; color: var(--color-textos-tarjeta-oscuro);"></p>
         <div style="display: flex; justify-content: center;">
           <a href="" id="boton-registrar" class="btn-primary" style="min-width: 220px; text-decoration: none;">Registrarlo</a>
         </div>
       </div>
     </div>
-    <div id="footer-container"></div>
-    <script>
-      fetch("footer.html")
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById("footer-container").innerHTML = html;
-        });
-    </script>
   </div>
 
   <script type="module">
+    import { obtenerCliente } from './js/api.js';
+
+    const colorTextos = getComputedStyle(document.documentElement).getPropertyValue('--color-textos-tarjeta').trim();
+    const colorTextosOscuros = getComputedStyle(document.documentElement).getPropertyValue('--color-textos-tarjeta-oscuro').trim();
+
     const params = new URLSearchParams(window.location.search);
     const dni = params.get("dni");
-    document.getElementById("boton-registrar").href = `registro-admin.html?dni=${dni}`;
+    document.getElementById("boton-registrar").addEventListener("click", (e) => {
+      e.preventDefault();
+      window.top.location.href = `registro-admin.html?dni=${dni}`;
+    });
 
     async function consultarCliente(dni) {
-      const res = await fetch(`https://us-central1-sandbox-cafe-emilianofil.cloudfunctions.net/apiCliente?dni=${dni}`);
-      const result = await res.json();
+      document.getElementById("loader").style.display = "flex";
+      document.getElementById("contenedor").style.display = "none";
+      const res = await obtenerCliente(dni);
 
-      document.getElementById("loader").style.display = "none";
       const contenedor = document.getElementById("contenedor");
       contenedor.style.display = "block";
 
-      if (result.status !== "ok") {
+      if (!res || res.status === "error") {
         document.title = "Resultado consulta cliente";
         document.getElementById("cliente").style.display = "none";
         document.getElementById("faltan").style.display = "none";
@@ -73,26 +77,33 @@
         const mensajeError = document.getElementById("mensaje-error");
         mensajeError.style.display = "block";
         document.getElementById("mensaje-no-registrado").innerHTML = `El DNI <strong>${dni}</strong> no está registrado en nuestro Club de Recompensas.`;
+        // Quitar tarjeta-fidelidad si está asignada
         contenedor.classList.remove("tarjeta-fidelidad");
 
-        document.querySelector("#info-header span").style.color = "white";
-        document.getElementById("faltan").style.color = "#008ba4";
-        document.getElementById("cliente").style.color = "white";
-        document.getElementById("footer-text").style.color = "white";
-        document.getElementById("footer-link").style.color = "white";
+        // Cambiar color del texto de #info-header span, #cliente, #faltan, y #mensaje-no-registrado a colorTextosOscuros
+        document.getElementById("info-header").style.color = colorTextosOscuros;
+        document.querySelector("#info-header span").style.color = colorTextosOscuros;
+        document.getElementById("faltan").style.color = colorTextosOscuros;
+        document.getElementById("cliente").style.color = colorTextosOscuros;
+        document.getElementById("mensaje-no-registrado").style.color = colorTextosOscuros;
+        document.querySelector("#info-header h4 span").style.color = colorTextosOscuros;
 
+        document.getElementById("loader").style.display = "none";
+
+        window.successfulQuery = false;
         return;
       }
 
+      const data = res;
       contenedor.classList.add("tarjeta-fidelidad");
 
-      document.querySelector("#info-header span").style.color = "#01323f";
-      document.getElementById("faltan").style.color = "#01323f";
-      document.getElementById("cliente").style.color = "#01323f";
-      document.getElementById("footer-text").style.color = "#01323f";
-      document.getElementById("footer-link").style.color = "#01323f";
+      // Cambiar color del texto de #info-header span, #cliente, #faltan, #info-header a colorTextos
+      document.getElementById("info-header").style.color = colorTextos;
+      document.querySelector("#info-header span").style.color = colorTextos;
+      document.getElementById("faltan").style.color = colorTextos;
+      document.getElementById("cliente").style.color = colorTextos;
+      document.querySelector("#info-header h4 span").style.color = colorTextos;
 
-      const data = result.data;
       const nombre = data.nombre || "Amigo";
       const cafes = parseInt(data.cafes) || 0;
       document.title = "Tarjeta cliente";
@@ -101,12 +112,17 @@
         ? `Te faltan ${8 - cafes} para alcanzarlo`
         : "¡El próximo lo invitamos nosotros! 🐎🎉";
 
+      document.getElementById("estado-accesible").textContent =
+        cafes < 8
+          ? `Tenés ${cafes} sello${cafes === 1 ? '' : 's'}. Te faltan ${8 - cafes} para tu café gratis.`
+          : "¡Ya juntaste 8 sellos! El próximo café es gratis.";
+
       const grid = document.getElementById("grid");
 
       const selloCumpleActivo = data.sello_cumpleanios_activo === true;
       const selloInstaActivo = data.sigue_instagram === true && data.sello_instagram_usado === false;
 
-      let cafesRestantes = cafes;
+      let cafesRestantes = parseInt(data.cafes) || 0;
       let selloCumpleUsado = false;
       let selloInstaUsado = false;
 
@@ -133,14 +149,47 @@
         } else if (i === 9) {
           div.classList.add("noveno");
         } else {
-          div.style.backgroundImage = "url('css/img/logo_color_secundario_2.png')";
+          div.style.backgroundImage = "url('css/img/logo_color_claro.png')";
         }
 
         grid.appendChild(div);
       }
+
+      document.getElementById("loader").style.display = "none";
+
+      window.successfulQuery = true;
     }
 
     consultarCliente(dni);
+  </script>
+  <div id="estado-accesible" style="position:absolute; left:-9999px;" aria-live="polite" aria-atomic="true"></div>
+  <script>
+    fetch("footer.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("footer-container").innerHTML = html;
+
+        // Ajustar colores luego de que el footer fue cargado
+        const footerText = document.getElementById("footer-text");
+        const footerLink = document.getElementById("footer-link");
+
+        const params = new URLSearchParams(window.location.search);
+        const dni = params.get("dni");
+
+        if (footerText) {
+          footerText.classList.add("footer-title");
+        }
+        if (footerLink) {
+          footerLink.classList.add("footer-link");
+        }
+
+        // Ajuste de clase footer-dark según el éxito de la consulta
+        if (window.successfulQuery) {
+          document.getElementById("footer-container").classList.remove("footer-dark");
+        } else {
+          document.getElementById("footer-container").classList.add("footer-dark");
+        }
+      });
   </script>
 </body>
 </html>

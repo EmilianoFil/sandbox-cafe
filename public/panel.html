@@ -6,133 +6,8 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <title>Admin - Estadísticas Internas</title>
+  <link rel="stylesheet" href="css/panel.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Syncopate&display=swap" rel="stylesheet"> <!-- Tipografías personalizadas --> <!--//Agrego para uso de letra -->
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Playfair Display', serif;
-      background-color: #fdfcf7;
-      color: #1d1d1d;
-    }
-
-    .menu-style {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 40px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-
-    .botones-panel {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .btn-izquierda,
-    .btn-derecha {
-      background-color: white;
-      color: #d86634;
-      padding: 8px 14px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 14px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .logo {
-      width: 60px;
-      display: block;
-      margin: 0 auto 20px;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 28px;
-      margin-bottom: 10px;
-      color: #0d2b37;
-    }
-
-    h2 {
-      font-size: 20px;
-      margin-top: 40px;
-      border-bottom: 1px dotted #aaa;
-      padding-bottom: 5px;
-      color: #2b2b2b;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    ul li {
-      margin: 8px 0;
-      padding: 8px;
-      background: #f3f1e8;
-      border-radius: 6px;
-    }
-
-    section {
-      margin-top: 20px;
-    }
-
-    .restriccion {
-      text-align: center;
-      color: #aa0000;
-      font-weight: bold;
-      font-size: 16px;
-    }
-
-    .galope {
-      animation: galopar 1s infinite ease-in-out alternate;
-    }
-
-    @keyframes galopar {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-10px); }
-    }
-
-    #loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(253, 252, 247, 0.9);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-      font-weight: bold;
-    }
-
-    #loader img {
-      width: 80px;
-      margin-bottom: 15px;
-    }
-
-    .variacion {
-      font-weight: bold;
-      font-size: 14px;
-      margin-left: 8px;
-    }
-
-    .variacion.sube {
-      color: green;
-    }
-
-    .variacion.baja {
-      color: red;
-    }
-  </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -157,11 +32,6 @@
       const docRef = doc(db, "admin", user.uid);
       const snap = await getDoc(docRef);
       console.log("📋 Datos del admin:", snap.exists() ? snap.data() : "NO EXISTE");
-      // if (!snap.exists() || snap.data().rol !== "dueño") {
-      //   cartel.innerText = "No tenés permisos para acceder a este sitio.";
-      //   document.getElementById("loader").style.display = "none";
-      //   return;
-      // }
 
       cartel.style.display = "none";
       contenedor.style.display = "block";
@@ -250,7 +120,7 @@
 </head>
 <body>
   <div id="loader">
-    <img src="css/img/logo-corcega-color.png" alt="Cargando..." class="galope">
+    <img src="css/img/logo_original_sin_fondo.png" alt="Cargando..." class="galope">
     <p>Cargando estadísticas...</p>
   </div>
 
@@ -262,7 +132,7 @@
     <a href="filtros.html" class="btn-derecha">Detalles logs</a>
   </div>
 </div>
-    <img src="css/img/logo-corcega-color.png" alt="Córcega" class="logo">
+    <img src="css/img/logo_original_sin_fondo.png" alt="Dársena Café" class="logo">
     <h1>Estadísticas Internas</h1>
     <p id="cartel" class="restriccion"></p>
 

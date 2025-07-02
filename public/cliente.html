@@ -5,49 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Admin - Detalle Cliente</title>
-  <script>
-    fetch("head.html")
-      .then(res => res.text())
-      .then(head => document.head.innerHTML += head);
-  </script>
-  <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/layout.css" /> 
-  <link rel="stylesheet" href="css/components/branding.css" />
-  <link rel="stylesheet" href="css/components/inputs.css" />
-  <link rel="stylesheet" href="css/components/buttons.css" />
-  <link rel="stylesheet" href="css/components/loader.css" />
-  <link rel="stylesheet" href="css/components/messages.css" />
-  <link rel="stylesheet" href="css/components/tarjeta.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Syncopate&display=swap" rel="stylesheet"> <!-- Tipografías personalizadas --> <!--//Agrego para uso de letra -->
+  <link rel="stylesheet" href="css/panel.css">
 </head>
-<body>
-  <div class="menu-style">
-    <h1>Buscar Cliente</h1>
-    <input type="text" id="busqueda" placeholder="DNI o nombre y apellido" />
+<body style="margin: 0; background-color: #fdfcf7; font-family: 'Playfair Display', serif; color: #1d1d1d;">
+  <div class="menu-style" style="max-width: 600px; margin: 40px auto; padding: 40px; background: white; border: 1px solid #ccc; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.05); text-align: center;">
+  
+    <div class="botones-panel">
+      <a href="admin.html" class="btn-izquierda">⬅ Volver al panel</a>
+    </div>  
+    <h1 style="margin-bottom: 20px;">Buscar Cliente</h1>
+
+    <input type="text" id="busqueda" placeholder="DNI o nombre y apellido"
+      style="padding: 10px; width: 80%; max-width: 300px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 15px;" />
+
     <br>
-    <button id="buscarBtn" class="boton">
+
+    <button id="buscarBtn" class="btn-derecha" style="margin-bottom: 20px;">
       Buscar
     </button>
-    <div id="loader">
-      <img src="css/img/logo_original.png" class="galope" />
+
+    <div id="loader" style="display: none; margin-bottom: 20px;">
+      <img src="css/img/logo_original_sin_fondo.png" class="galope" style="width: 80px; animation: galopar 1s infinite ease-in-out alternate;" />
     </div>
-    <div id="resultado" class="resultado"></div>
-    <div class="footer">
-      <a href="admin.html" class="volver">⬅ Volver al panel</a>
-    </div>
+
+    <div id="resultado" class="resultado" style="text-align: left;"></div>
+
   </div>
 
   <script type="module">
     import { auth, onAuthStateChanged } from './js/firebase-auth.js';
-    import { apiCliente } from './js/cliente.js';
+    import { db } from './js/firebase-config.js';
+    import {
+      doc, getDoc, collection, getDocs, setDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    let currentUser = null;
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "login.html";
         return;
       }
-
-      const clienteAdmin = await apiCliente.obtenerAdmin(user.uid);
-      if (!clienteAdmin || clienteAdmin.rol !== "dueño") {
+      currentUser = user;
+      const ref = doc(db, "usuarios", user.uid);
+      const snap = await getDoc(ref);
+      console.log("📄 Documento Firestore:", snap.exists() ? snap.data() : "No existe");
+      if (!snap.exists() || snap.data().rol !== "dev") {
         alert("Acceso restringido a dueños.");
         window.location.href = "login.html";
       }
@@ -60,21 +63,28 @@
       resultado.innerHTML = "";
       loader.style.display = "block";
 
-      const lista = await apiCliente.obtenerTodosLosClientes();
+      const ref = collection(db, "clientes");
+      const snapshot = await getDocs(ref);
 
       loader.style.display = "none";
 
-      const encontrado = lista.find(data =>
-        data.dni.toLowerCase() === termino ||
-        data.nombre.toLowerCase().includes(termino)
-      );
+      let encontrado = null;
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (
+          data.dni.toLowerCase() === termino ||
+          data.nombre.toLowerCase().includes(termino)
+        ) {
+          encontrado = data;
+        }
+      });
 
       if (!encontrado) {
         resultado.innerHTML = "<p>No se encontró ningún cliente con ese dato.</p>";
         return;
       }
 
-      const alta = encontrado.creado ? new Date(encontrado.creado._seconds * 1000) : null;
+      const alta = encontrado.creado?.toDate?.();
       const dias = alta ? Math.floor((Date.now() - alta.getTime()) / (1000 * 60 * 60 * 24)) : null;
       const formatFecha = (fecha) => {
         const d = fecha.getDate().toString().padStart(2, '0');
@@ -85,21 +95,112 @@
 
       const altaTexto = alta ? `${formatFecha(alta)} (${dias} días)` : "—";
 
-      const ultimo = encontrado.ultimo_cafe ? new Date(encontrado.ultimo_cafe._seconds * 1000) : null;
+      const ultimo = encontrado.ultimo_cafe?.toDate?.();
       const ultimoTexto = ultimo ? ultimo.toLocaleString() : "—";
 
       resultado.innerHTML = `
-        <div class="info-cliente">
+        <div class="info-cliente" style="padding: 20px; background: #f8f6f2; border-radius: 10px; border: 1px solid #ccc;">
           <p><strong>DNI:</strong> ${encontrado.dni}</p>
           <p><strong>Nombre:</strong> ${encontrado.nombre}</p>
           <p><strong>Email:</strong> ${encontrado.email}</p>
+          <p><strong>Día de cumpleaños:</strong> <span id="cumple-dia">${encontrado.cumple_dia ?? "—"}</span></p>
+          <p><strong>Mes de cumpleaños:</strong> <span id="cumple-mes">${encontrado.cumple_mes ?? "—"}</span></p>
           <p><strong>Fecha de alta:</strong> ${altaTexto}</p>
           <p><strong>Cafecitos acumulados:</strong> ${encontrado.cafes}</p>
           <p><strong>Total histórico:</strong> ${encontrado.cafes_acumulados_total}</p>
           <p><strong>¿Tiene café gratis?</strong> ${encontrado.cafe_disponible ? "Sí ☕" : "No"}</p>
           <p><strong>Último café:</strong> ${ultimoTexto}</p>
         </div>
+        <div style="margin-top: 20px; text-align: right;">
+          <button id="editarBtn" class= "btn-derecha">Editar</button>
+        </div>
       `;
+
+      // --- Lógica de edición ---
+      let enModoEdicion = false;
+
+      function activarEdicion() {
+        if (enModoEdicion) return;
+        enModoEdicion = true;
+
+        resultado.querySelector("#editarBtn").style.display = "none";
+
+        const inputStyle = 'style="width: 200px; padding: 6px;"';
+
+        resultado.querySelector("p:nth-child(1)").innerHTML = '<strong>DNI:</strong> <input id="edit-dni" ' + inputStyle + ' value="' + encontrado.dni + '">';
+        resultado.querySelector("p:nth-child(3)").innerHTML = '<strong>Email:</strong> <input id="edit-email" ' + inputStyle + ' value="' + encontrado.email + '">';
+        resultado.querySelector("p:nth-child(8)").innerHTML = '<strong>Día de cumpleaños:</strong> <input id="edit-cumple-dia" type="number" min="1" max="31" ' + inputStyle + ' value="' + (encontrado.cumple_dia ?? '') + '">';
+        resultado.querySelector("p:nth-child(9)").innerHTML = '<strong>Mes de cumpleaños:</strong> <input id="edit-cumple-mes" type="number" min="1" max="12" ' + inputStyle + ' value="' + (encontrado.cumple_mes ?? '') + '">';
+
+        const acciones = document.createElement("div");
+        acciones.style.marginTop = "20px";
+        acciones.innerHTML = `
+          <button id="guardarBtn" class= "btn-derecha">Guardar</button>
+          <button id="cancelarBtn" class= "btn-derecha" style="margin-left: 10px;">Cancelar</button>
+        `;
+        resultado.appendChild(acciones);
+
+        document.getElementById("guardarBtn").addEventListener("click", async () => {
+          const guardarBtn = document.getElementById("guardarBtn");
+          guardarBtn.disabled = true;
+          guardarBtn.innerText = "Guardando...";
+
+          const nuevoDNI = document.getElementById("edit-dni").value.trim();
+          const nuevoEmail = document.getElementById("edit-email").value.trim();
+          const nuevoNombre = document.getElementById("edit-nombre")?.value.trim() ?? encontrado.nombre;
+          const nuevoDia = parseInt(document.getElementById("edit-cumple-dia").value);
+          const nuevoMes = parseInt(document.getElementById("edit-cumple-mes").value);
+
+          try {
+            // Detectar cambios y loguearlos
+            const cambios = [];
+            if (nuevoDNI !== encontrado.dni) cambios.push(`DNI: ${encontrado.dni} → ${nuevoDNI}`);
+            if (nuevoEmail !== encontrado.email) cambios.push(`Email: ${encontrado.email} → ${nuevoEmail}`);
+            if (nuevoNombre !== encontrado.nombre) cambios.push(`Nombre: ${encontrado.nombre} → ${nuevoNombre}`);
+            if ((nuevoDia || null) !== (encontrado.cumple_dia ?? null)) cambios.push(`Día cumple: ${encontrado.cumple_dia ?? "—"} → ${nuevoDia || "—"}`);
+            if ((nuevoMes || null) !== (encontrado.cumple_mes ?? null)) cambios.push(`Mes cumple: ${encontrado.cumple_mes ?? "—"} → ${nuevoMes || "—"}`);
+
+            if (cambios.length === 0) {
+              alert("No se detectaron cambios.");
+              guardarBtn.disabled = false;
+              guardarBtn.innerText = "Guardar";
+              return;
+            }
+
+            const docRef = doc(db, "clientes", nuevoDNI);
+            await setDoc(docRef, {
+              ...encontrado,
+              dni: nuevoDNI,
+              email: nuevoEmail,
+              nombre: nuevoNombre,
+              cumple_dia: nuevoDia || null,
+              cumple_mes: nuevoMes || null
+            });
+
+            // Log de cambios
+            const logRef = doc(collection(db, "logs"));
+            await setDoc(logRef, {
+              usuario: currentUser.email,
+              accion: "editar_cliente",
+              detalles: "DNI: " + nuevoDNI + "; Cambios: " + cambios.join(" | "),
+              timestamp: new Date()
+            });
+
+            alert("Datos actualizados");
+            window.location.reload();
+          } catch (error) {
+            guardarBtn.disabled = false;
+            guardarBtn.innerText = "Guardar";
+            alert("Error al guardar los datos: " + error.message);
+          }
+        });
+
+        document.getElementById("cancelarBtn").addEventListener("click", () => {
+          window.location.reload();
+        });
+      }
+
+      resultado.querySelector("#editarBtn")?.addEventListener("click", activarEdicion);
     });
   </script>
 </body>

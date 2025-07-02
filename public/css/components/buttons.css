@@ -8,9 +8,9 @@
 }
 
 /* Botones */
-button, .btn-primary {
+.btn-primary {
   padding: 10px 20px;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Syncopate', serif;
   font-size: 12px;
   margin: 12.5px auto;
   background-color: var(--color-secundario-2);
@@ -25,14 +25,20 @@ button, .btn-primary {
 }
 
 .btn-secondary {
+  padding: 10px 20px;
+  font-family: 'Syncopate', serif;
+  font-size: 12px;
+  margin: 12.5px auto;
   background-color: var(--color-secundario-1);
-  color: var(--color-claro);
-  padding: 10px 12px;
-  border-radius: 8px;
+  color: white;
   text-decoration: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
   font-weight: bold;
-  font-size: 12.5px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-top: 10px;
+  white-space: nowrap; 
 }
 
 #mensaje-error .boton {
@@ -59,13 +65,18 @@ button, .btn-primary {
 }
 
 .btn-estadisticas {
-  background-color: white;
-  color: #ed7053;
-  padding: 10px 12px;
+  padding: 10px 20px;
+  font-family: 'Playfair Display', serif;
+  font-size: 12px;
+  margin: 12.5px auto;
+  background-color: var(--color-oscuro);
+  color: var(--color-claro);
+  border: none;
   border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 12.5px;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-top: 10px;
+  white-space: nowrap; 
 }
 
 .logout-button {
@@ -137,6 +148,20 @@ button, .btn-primary {
 
 .btn-volver:hover {
   background-color: #f9f9f9;
+}
+
+.logout {
+  margin-top: 20px;
+}
+
+.logout a {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: var(--color-oscuro);
+  font-weight: bold;
+  margin: 8px 0;
+  cursor: pointer;
 }
 
 @media (max-width: 480px) {

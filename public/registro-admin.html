@@ -34,7 +34,14 @@
     <img src="css/img/logo_color_secundario_2.png" alt="Dársena Café" class="logo" />
     <h1>Registrar nuevo cliente</h1>
     <form id="registroForm">
-      <input type="tel" name="dni" id="dni" placeholder="DNI" inputmode="numeric" pattern="^\d{7,8}$" maxlength="8" required title="Debe contener entre 7 y 8 números">
+      <div style="display: flex; align-items: center; gap: 0.5em;">
+        <select id="tipoDocumento" name="tipoDocumento" class="input-like">
+          <option value="DNI" selected>DNI</option>
+          <option value="PA">PA</option>
+        </select>
+        <!-- El input ya existente de DNI queda tal cual -->
+        <input type="tel" name="dni" id="dni" placeholder="DNI" inputmode="numeric" pattern="^\d{7,8}$" maxlength="8" required title="Debe contener entre 7 y 8 números">
+      </div>
       <input type="text" name="nombre" placeholder="Nombre y apellido" required pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$" title="Sólo letras y espacios">
       <input type="email" name="mail" placeholder="Correo electrónico" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" />
       <p>¿Cuándo es su cumpleaños?</p>
@@ -62,7 +69,7 @@
       <div>
         <button type="button" class="btn-secondary" id="registrarYSumar">Registrar y sumar cafecito</button>
       </div>
-      <div class="logout">
+      <div>
         <a href="admin.html" class="btn-volver">Volver</a>
       </div>
     </form>
@@ -81,6 +88,23 @@
   const dniInput = document.getElementById("dni");
   if (dniInicial) dniInput.value = dniInicial;
 
+  const tipoDocumento = document.getElementById("tipoDocumento");
+  tipoDocumento.addEventListener("change", () => {
+    if (tipoDocumento.value === "PA") {
+      dniInput.removeAttribute("pattern");
+      dniInput.removeAttribute("maxlength");
+      dniInput.setAttribute("inputmode", "text");
+      dniInput.setAttribute("placeholder", "Pasaporte");
+      dniInput.style.textTransform = "uppercase";
+    } else {
+      dniInput.setAttribute("pattern", "[0-9]{7,8}");
+      dniInput.setAttribute("maxlength", "8");
+      dniInput.setAttribute("inputmode", "numeric");
+      dniInput.setAttribute("placeholder", "DNI");
+      dniInput.style.textTransform = "none";
+    }
+  });
+
   const form = document.getElementById("registroForm");
   const mensaje = document.getElementById("mensaje");
   const loader = document.getElementById("loader");
@@ -96,7 +120,7 @@
     loader.style.display = "block";
     mensaje.innerText = "";
 
-    if (!/^\d{7,8}$/.test(dni)) {
+    if (tipoDocumento.value === "DNI" && !/^\d{7,8}$/.test(dni)) {
       mensaje.innerText = "⚠️ El DNI debe tener entre 7 y 8 números.";
       loader.style.display = "none";
       return;

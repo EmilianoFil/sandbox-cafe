@@ -8,19 +8,20 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
   <title>Admin - Sumar Cafecito</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Syncopate&display=swap" rel="stylesheet"> <!-- Tipografías personalizadas --> <!--//Agrego para uso de letra -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NXMC00DZ81"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NXMCddd00DZ81"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-NXMC00DZ81');
+    gtag('config', 'G-NXMC00DdddZ81');
   </script>
 </head>
 <body>
   <style>
-    .btn-estadisticas {
+ /*   .btn-estadisticas {
       background-color: white;
       color: #d86634;
       padding: 10px 12px;
@@ -29,7 +30,7 @@
       font-weight: bold;
       font-size: 12.5px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
+    }*/
     #sesion-expirada {
       display: none;
       text-align: center;
@@ -158,50 +159,32 @@
   min-width: 220px;
   margin: 8px 0;
 }
+    #pantalla-cargando {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fdfcf7;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo-cargando {
+      width: 100px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0.4; transform: scale(1); }
+    }
   </style>
-  <div class="menu-style">
-    <nav class="menu-hamburguesa">
-      <input type="checkbox" id="menu-toggle">
-      <label for="menu-toggle" class="menu-icon">☰</label>
-      <ul class="menu-links" id="menuLinks"></ul>
-    </nav>
-    <div class="info-usuario">
-      Usuario logueado: <span id="usuarioLogueado">-</span>
-    </div>
-    <h1>Cargar Cafecito ☕</h1>
-    <form id="adminForm">
-      <input type="tel" name="dni" id="dni" placeholder="DNI del cliente" inputmode="numeric" pattern="[0-9]*" required />
-      <div class="button-row">
-        <button type="submit" id="submitBtn">Sumar cafecito</button>
-        <button type="button" id="consultarCliente" class="btn-estadisticas">Consultar cliente</button>
-      </div>
-    </form>
-    <div style="margin-top: 10px;">
-      <button id="btnInstagram" style="display:none;" class="btn-estadisticas">📸 Sigue Instagram</button>
-    </div>
-  <div id="loader" style="display: none; margin-top: 20px; text-align: center; width: 100%;">
-    <img src="css/img/logo_color_oscuro.png" class="galope" style="width: 95px; display: inline-block;">
-  </div>
-    <div id="respuesta" class="mensaje"></div>
-    <button id="btnDeshacer" style="display:none;" class="btn-estadisticas">↩️ Deshacer operación</button>
-    <div class="logout">
-      <a href="admin.html" class="volver">Otro Cliente</a>
-      <a href="#" id="cerrarSesionLink" class="cerrar">Cerrar sesión</a>
-    </div>
-  </div>
 
-  <div id="clientePreview">
-    <div class="tarjeta-fidelidad sin-titulo">
-      <button id="cerrarPreview" class="cerrar-preview">❌</button>
-      <iframe id="iframeEstado" style="width: 100%; height: 100%; border: none;"></iframe>
-    </div>
-  </div>
-
-  <div id="sesion-expirada">
-    <p></p>
-    <a href="login.html">Volver a ingresar</a>
-  </div>
-<script type="module">
+  <script type="module">
     import { auth, onAuthStateChanged } from './js/firebase-auth.js';
     import { getFirestore, doc, getDoc, collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
     const db = getFirestore();
@@ -214,24 +197,27 @@
           const snap = await getDoc(ref);
           const nombre = snap.exists() ? (snap.data().nombre || user.email) : user.email;
           document.getElementById("usuarioLogueado").innerText = nombre;
-          // Definir niveles de rol
+
           const rol = snap.exists() ? (snap.data().rol || "empleado") : "empleado";
-          if (rol === "dueño" || rol === "dev") {
-            document.getElementById("botonEstadisticas")?.style && (document.getElementById("botonEstadisticas").style.display = "block");
-          }
 
           // Construcción dinámica del menú según rol
           const links = [];
+
           if (rol === "dev" || rol === "dueño") {
             links.push({ href: "registro-admin.html", text: "Registrar Admin" });
             links.push({ href: "menu-upload.html", text: "Subir Menú" });
+            links.push({ href: "cliente.html", text: "Consultar / Editar Cliente" });
             links.push({ href: "panel.html", text: "Estadísticas" });
             links.push({ href: "filtros.html", text: "Detalle logs" });
-            links.push({ href: "usuarios.html", text: "Gestión de usuarios" }); // nuevo html a crear
+            links.push({ href: "usuarios.html", text: "Gestión de usuarios" }); // nuevo si existe
           } else if (rol === "encargado") {
             links.push({ href: "panel.html", text: "Estadísticas" });
+            links.push({ href: "cliente.html", text: "Consultar / Editar Cliente" });
+          } else if (rol === "empleado") {
+            links.push({ href: "cliente.html", text: "Consultar / Editar Cliente" });
           }
-          const menuLinks = document.getElementById("menuLinks");
+
+          const menuLinks = document.querySelector(".menu-links");
           if (menuLinks) {
             menuLinks.innerHTML = "";
             links.forEach(link => {
@@ -243,7 +229,6 @@
               menuLinks.appendChild(li);
             });
           }
-
           const ahora = Date.now();
           localStorage.setItem("loginTimestamp", ahora.toString());
           localStorage.setItem("ultimoEvento", ahora.toString());
@@ -291,27 +276,85 @@
       localStorage.clear();
       auth.signOut();
     }
-  // --- MOVIDO DESDE SEGUNDO <script type="module"> ---
-  import { apiCliente, apiLog, apiCafe, apiMailFelicitaciones } from './js/cliente.js';
-  import { auth as auth2, signOut } from './js/firebase-auth.js';
+
+    document.getElementById("btnOtroCliente").addEventListener("click", () => {
+      document.getElementById("pantalla-cargando").style.display = "flex";
+      setTimeout(() => {
+        location.reload();
+      }, 300);
+    });
+  </script>
+
+  <div class="menu-style">
+    <nav class="menu-hamburguesa">
+      <input type="checkbox" id="menu-toggle">
+      <label for="menu-toggle" class="menu-icon">☰</label>
+      <ul class="menu-links">
+        <li><a href="registro-admin.html">Registrar Admin</a></li>
+        <li><a href="menu-upload.html">Subir Menú</a></li>
+        <li><a href="cliente.html">Consultar / Editar Cliente</a></li>
+        <li><a href="panel.html">Estadísticas</a></li>
+        <li><a href="filtros.html">Detalle logs</a></li>
+      </ul>
+    </nav>
+    <div class="info-usuario">
+      Usuario logueado: <span id="usuarioLogueado">-</span>
+    </div>
+    <h1>Cargar Cafecito ☕</h1>
+    <form id="adminForm">
+      <input type="tel" name="dni" id="dni" placeholder="DNI del cliente" inputmode="numeric" pattern="[0-9]*" required />
+      <div class="button-row">
+        <button type="submit" id="submitBtn" class="btn-primary">Sumar cafecito</button>
+        <button type="button" id="consultarCliente" class="btn-secondary">Consultar cliente</button>
+      </div>
+    </form>
+    <div style="margin-top: 10px;">
+      <button id="btnInstagram" style="display:none;" class="btn-estadisticas">📸 Sigue Instagram</button>
+    </div>
+  <div id="loader" style="display: none; margin-top: 20px; text-align: center; width: 100%;">
+    <img src="css/img/logo_original.png" class="galope" style="width: 95px; display: inline-block;">
+  </div>
+    <div id="respuesta" class="mensaje"></div>
+    <button id="btnDeshacer" style="display:none;" class="btn-estadisticas">↩️ Deshacer operación</button>
+     <div class="OtroCliente">
+      <a href="admin.html" id="btnOtroCliente" class="btn-secondary" style="display: none;">Otro Cliente</a>
+    </div>
+    <div class="logout">
+      <a href="#" onclick="cerrarSesion()" class="cerrar">Cerrar sesión</a>
+    </div>
+  </div>
+
+  <div id="clientePreview">
+    <div class="tarjeta-fidelidad sin-titulo">
+      <button id="cerrarPreview" class="cerrar-preview">❌</button>
+      <iframe id="iframeEstado" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+  </div>
+
+  <div id="sesion-expirada">
+    <p></p>
+    <a href="login.html">Volver a ingresar</a>
+  </div>
+<script type="module">
+  import { app, db } from './js/firebase-config.js';
+  import {
+    doc, getDoc, updateDoc, increment, serverTimestamp, collection, addDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { auth, signOut } from './js/firebase-auth.js';
 
   async function cerrarSesion() {
-    const usuario = auth2.currentUser?.email || "admin";
-    await apiLog.registrar({
+    const usuario = auth.currentUser?.email || "admin";
+    await addDoc(collection(db, "logs"), {
       usuario,
       accion: "cerrar_sesion",
       detalles: "Cierre de sesión",
       timestamp: new Date()
     });
-    await signOut(auth2);
+    await signOut(auth);
     localStorage.clear();
     window.location.href = "login.html";
   }
   window.cerrarSesion = cerrarSesion;
-
-  window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById("cerrarSesionLink")?.addEventListener("click", cerrarSesion);
-  });
 
   // Listener para el botón "Consultar cliente"
   document.getElementById("consultarCliente").addEventListener("click", async () => {
@@ -321,8 +364,10 @@
     const iframe = document.getElementById("iframeEstado");
     iframe.src = `admin_estado_cliente.html?dni=${dni}`;
     // Cumpleaños check aquí
-    const data = await apiCliente.obtenerCliente(dni);
-    if (data) {
+    const ref = doc(db, "clientes", dni);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      const data = snap.data();
       const hoy = new Date();
       const diaHoy = String(hoy.getDate()).padStart(2, '0');
       const mesHoy = String(hoy.getMonth() + 1).padStart(2, '0');
@@ -346,36 +391,39 @@
     const div = document.getElementById("respuesta");
     const loader = document.getElementById("loader");
     let btnInsta = document.getElementById("btnInstagram");
-    const usuario = auth2.currentUser?.email || "admin";
+    const btnConsultar = document.getElementById("consultarCliente");
+    const usuario = auth.currentUser?.email || "admin";
 
     div.innerHTML = "";
     loader.style.display = "block";
     input.disabled = true;
     button.disabled = true;
+    button.style.display = "none";
     btnInsta.style.display = "none";
-    document.getElementById("submitBtn").style.display = "none";
-    document.getElementById("consultarCliente").style.display = "none";
+    btnConsultar.style.display = "none";
 
     const dni = input.value.trim();
-    const data = await apiCliente.obtenerCliente(dni);
+    const ref = doc(db, "clientes", dni);
+    const snap = await getDoc(ref);
 
-    await apiLog.registrar({
+    await addDoc(collection(db, "logs"), {
       usuario,
       accion: "admin_consulta_cliente",
       detalles: `DNI: ${dni}`,
       timestamp: new Date()
     });
 
-    if (!data) {
+    if (!snap.exists()) {
       document.title = "Admin - Resultado consulta cliente";
       div.className = "mensaje error";
-      div.innerHTML = `❌ El DNI ${dni} no está registrado.<p style="margin-bottom: 50px;"><a href="registro-admin.html?dni=${dni}" class="btn-estadisticas">Registrar</a></p>`;
+      div.innerHTML = `❌ El DNI ${dni} no está registrado.<br><a href="registro-admin.html?dni=${dni}">Registrar</a>`;
       loader.style.display = "none";
       input.disabled = false;
       button.disabled = false;
       return;
     }
 
+    const data = snap.data();
     // Cumpleaños check aquí
     const hoy = new Date();
     const diaHoy = String(hoy.getDate()).padStart(2, '0');
@@ -393,20 +441,19 @@
     const nombre = data.nombre || dni;
     const cafes = parseInt(data.cafes || 0);
     const updates = {
-      ultimo_cafe: new Date(), // serverTimestamp reemplazado por Date por ahora
-      cafes_acumulados_total: 1 // increment(1) se maneja del lado API
+      ultimo_cafe: serverTimestamp(),
+      cafes_acumulados_total: increment(1)
     };
     let mensajeFinal = "";
 
     if (cafes >= 8) {
       updates.cafes = 0;
       updates.cafe_disponible = false;
-      updates.cafecitos_invitados = 1; // increment(1)
+      updates.cafecitos_invitados = increment(1);
       // if (data.sigue_instagram && !data.sello_instagram_usado) { 
       if (data.sigue_instagram && !data.sello_instagram_usado && !data.sello_pendiente) { 
         updates.sello_instagram_usado = true;
-        await apiCafe.actualizarCliente(dni, { sello_instagram_usado: true });
-        await apiLog.registrar({
+        await addDoc(collection(db, "logs"), {
           usuario: dni,
           accion: "usar_sello_instagram",
           detalles: `Se marca sello de Instagram como usado para ${dni}`,
@@ -419,7 +466,7 @@
       }
       if (data.sello_pendiente) {
         updates.cafes = 1;
-        updates.cafes_acumulados_total = 1;
+        updates.cafes_acumulados_total = increment(1);
         updates.sello_pendiente = false;
         updates.sigue_instagram = true;
         //updates.sello_instagram_usado = true; --> Este no tenía que setearse en true
@@ -428,7 +475,7 @@
         mensajeFinal = `🎁 Este a ${nombre} se lo tenemos que invitar nosotros!\n¡Gracias por su fidelidad!`;
       }
       document.title = "Admin - Invitación cafecito";
-      await apiLog.registrar({
+      await addDoc(collection(db, "logs"), {
         usuario,
         accion: "invitar_cafecito",
         detalles: `DNI: ${dni} - ${nombre}`,
@@ -442,7 +489,7 @@
         ? `✅ Se sumó 1 cafecito a ${nombre}.\nEl próximo se lo invitamos nosotros ☕🎉`
         : `✅ Se sumó 1 cafecito a ${nombre}.\nTotal: ${updates.cafes}`;
       document.title = "Admin - Suma cafecito";
-      await apiLog.registrar({
+      await addDoc(collection(db, "logs"), {
         usuario,
         accion: "sumar_cafecito",
         detalles: `DNI: ${dni} - ${nombre}`,
@@ -451,16 +498,21 @@
       if (typeof gtag === 'function') gtag('event', 'admin_suma_cafe', { dni });
     }
 
-    await apiCafe.actualizarCliente(dni, updates);
+    await updateDoc(ref, updates);
 
     // Enviar mail de felicitaciones SOLO cuando updates.cafes === 8
     if (updates.cafes === 8) {
-      apiMailFelicitaciones({ dni, nombre, mail: data.email || data.mail || "" });
+      fetch("https://us-central1-caorcega-loyalty-club.cloudfunctions.net/enviarMailFelicitaciones", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dni, nombre, mail: data.email || data.mail || "" })
+      });
     }
 
     // Guardamos para deshacer
     const btnDeshacer = document.getElementById("btnDeshacer");
     btnDeshacer.style.display = "inline-block";
+    document.querySelector('.OtroCliente #btnOtroCliente').style.display = "inline-block";
     window.ultimaOperacion = { dni, prevData: estadoAnterior, usuario };
 
     // Mostrar botón Instagram si corresponde
@@ -471,7 +523,8 @@
       btnInsta = nuevoBtn;
       btnInsta.onclick = async () => {
         btnInsta.disabled = true;
-        const cliente = await apiCliente.obtenerCliente(dni);
+        const snapActual = await getDoc(ref);
+        const cliente = snapActual.data();
         const cafesActuales = cliente.cafes || 0;
         const updatesInstagram = {};
 
@@ -481,12 +534,12 @@
           updatesInstagram.sigue_instagram = true;
           //updatesInstagram.sello_instagram_usado = true; -->comento siguiendo mi instinto de programador jajaj
           updatesInstagram.cafes = cafesActuales + 1;
-          updatesInstagram.cafes_acumulados_total = 1;
+          updatesInstagram.cafes_acumulados_total = increment(1);
         }
 
         try {
-          await apiCafe.actualizarCliente(dni, updatesInstagram);
-          await apiLog.registrar({
+          await updateDoc(ref, updatesInstagram);
+          await addDoc(collection(db, "logs"), {
             usuario,
             accion: "marcar_instagram",
             detalles: `DNI: ${dni} - ${nombre}`,
@@ -503,6 +556,8 @@
     // Acción botón Deshacer
     btnDeshacer.onclick = async () => {
       const { dni, prevData, usuario } = window.ultimaOperacion;
+      const ref = doc(db, "clientes", dni);
+    
       // Restaurar todos los datos usando prevData completo
       const updates = {};
       for (const key in prevData) {
@@ -511,9 +566,9 @@
           updates[key] = value;
         }
       }
-      await apiCafe.actualizarCliente(dni, updates);
+      await updateDoc(ref, updates);
 
-      await apiLog.registrar({
+      await addDoc(collection(db, "logs"), {
         usuario,
         accion: "deshacer_operacion",
         detalles: `Reversión manual sobre DNI ${dni}`,
@@ -531,15 +586,10 @@
     button.disabled = false;
   });
 </script>
-<script>
-  document.addEventListener('click', function(event) {
-    const toggle = document.getElementById('menu-toggle');
-    const menu = document.querySelector('.menu-hamburguesa');
-
-    if (toggle.checked && !menu.contains(event.target) && event.target !== document.querySelector('label[for="menu-toggle"]')) {
-      toggle.checked = false;
-    }
-  });
-</script>
 </body>
+  <div id="pantalla-cargando" style="display:none;">
+    <div class="pantalla-overlay">
+      <img src="css/img/logo_original.png" alt="Cargando..." class="logo-cargando">
+    </div>
+  </div>
 </html>
